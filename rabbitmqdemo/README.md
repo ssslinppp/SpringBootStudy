@@ -23,6 +23,7 @@ Java版本使用如下jar（说明：若是使用）：
 ```
 
 # demo1： 单生产者-单消费者 
+https://www.rabbitmq.com/img/tutorials/python-one.png
 - Java版本：[单生产者单消费者](https://www.rabbitmq.com/tutorials/tutorial-one-java.html)     
 程序位置：java.demo1包下面
 
@@ -34,6 +35,7 @@ spring.profiles.active=hello-world, sender, receiver
 
 # demo2: 单生产者-多消费者 
 [Work queues](https://www.rabbitmq.com/tutorials/tutorial-two-java.html)
+https://www.rabbitmq.com/img/tutorials/python-two.png
 application.properties配置
 ```properties
 spring.profiles.active=work-queues, sender, receiver
@@ -72,6 +74,7 @@ but RabbitMQ will eat more and more memory as it won't be able to release any un
 - 结果（弊端）：可能结果是，一个消费者一直执行繁忙的任务，另一个消费者，几乎不怎么执行工作；
 
 ### Fair分发策略（spring-amqp默认策略）
+https://www.rabbitmq.com/img/tutorials/prefetch-count.png
 - `DEFAULT_PREFETCH_COUNT=1`: `SimpleMessageListenerContainer`默认设置；    
   表示：同一时间，不要给同一个消费者超过1个以上的任务，即：如果消费者没有消费完Message，就不要再给他派发新消息；   
   实现方式： 消费者消费完成后，会发送`应答`，监听器没接收到应答，就不会给该消费者派发新消息；
