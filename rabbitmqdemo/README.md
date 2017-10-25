@@ -23,7 +23,8 @@ Java版本使用如下jar（说明：若是使用）：
 ```
 
 # demo1： 单生产者-单消费者 
-https://www.rabbitmq.com/img/tutorials/python-one.png
+https://www.rabbitmq.com/img/tutorials/python-one.png 
+
 - Java版本：[单生产者单消费者](https://www.rabbitmq.com/tutorials/tutorial-one-java.html)     
 程序位置：java.demo1包下面
 
@@ -34,8 +35,8 @@ spring.profiles.active=hello-world, sender, receiver
 ```
 
 # demo2: 单生产者-多消费者 
-[Work queues](https://www.rabbitmq.com/tutorials/tutorial-two-java.html)
-https://www.rabbitmq.com/img/tutorials/python-two.png
+[Work queues](https://www.rabbitmq.com/tutorials/tutorial-two-java.html)  
+https://www.rabbitmq.com/img/tutorials/python-two.png   
 application.properties配置
 ```properties
 spring.profiles.active=work-queues, sender, receiver
