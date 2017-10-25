@@ -5,7 +5,12 @@
 2. 监听器的常规使用： 没有code；
 
 ## rabbit-message
-官方教程测试，包括：
 1. 安装rabbitmq；
-2. 官方教程：[Messaging with RabbitMQ](https://spring.io/guides/gs/messaging-rabbitmq/)
+2. Springboot官方教程：[Messaging with RabbitMQ](https://spring.io/guides/gs/messaging-rabbitmq/)
+
+## rabbitdemo
+1. rabbitmq官方教程：包括6种不同的Springboot-AMQP应用示例；  
+[RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
+
+
 
