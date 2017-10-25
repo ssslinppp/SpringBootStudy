@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Description：<br/>
+ * Description：单生产者-单消费者示例<br/>
  * User: liulin <br/>
  * Date: 2017/10/25 <br/>
  * Time: 16:05 <br/>
