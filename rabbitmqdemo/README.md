@@ -8,6 +8,23 @@
 ![核心架构图](https://lh3.googleusercontent.com/TmA6flkGzB1yc1xK6lGbJZ0YYqO__39trLIPxM62VUjsr09wClmbv9mT3WX4F0cuDssmkiHkekWR6AvXY0iVScuksmLxyM27FaJGYbgPezCIjRs-l8Ct3MfuUU3bRbpfWT6dhVBO)   
 ## [AMQP 0-9-1 Model Explained](https://www.rabbitmq.com/tutorials/amqp-concepts.html) 
 
+## 重要语法说明
+- producer或publisher: 消息生产者/发布者，即：产生消息的；
+- Exchange：producer或publisher只会将message发送到Exchange，目前有4种不同的Exchange类型；
+- Queue：消息队列，所有的消费者都是直接从Queue获取Message并消费；
+- Binging：连接Exchange和Queue的纽带，决定Exchange如何路由消息到不同的Queue；
+- routingKey：生产者-->message-->Exchange，需要指定一个key，叫做routingKey;
+- routingKey：Exchange-->Binging-->Queue，Binging有一个Key值，叫routingKey或bingingKey;
+- bingingKey：Exchange-->Binging-->Queue，Binging有一个Key值，bingingKey;   
+
+### 核心理解
+4种不同的Exchange，对routingKey的解释都不相同；   
+对routingKey的不同解释，决定了Exchange路由Message到Queue的不同方案；  
+1. direct exchange： 匹配2个routingKey（即routingKey和bingingKey）是否相等，相等时才进行消息路由；
+2. fanout exchange： 忽略routingKey，会将Message路由到所有绑定的Queue；
+3. topic exchange： routingKey格式形如`aaa.bbb.xxx`、`*.ccc.dd.#`，类似正则表达式匹配；
+4. headers exchange：
+
 ---
 # jar包说明
 - Java版本：  
@@ -93,7 +110,23 @@ pring.profiles.active=routing, receiver , sender
 
 详细描述参见：[发布/订阅详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut4)
 
+---
 
+# demo5: Topics
+[Topics官方示例](http://www.rabbitmq.com/tutorials/tutorial-five-spring-amqp.html)
+![结构示例图](https://www.rabbitmq.com/img/tutorials/python-five.png)  
+- 使用 Topic exchange实现；
+- 发送到Topic exchange的routingKey必须满足一定要求：用"."分割的words列表，如：`*.aaa.bbb.#` ； 
+- BingingKey和routingKey有相同的格式要求；
+- `*` : 可以匹配一个word；
+- `#`: 可以匹配0个或多个words；  
+
+application.properties配置
+```properties
+pring.profiles.active=topics, receiver , sender 
+```
+
+详细描述参见：[Topics](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut5)
 
 
 
