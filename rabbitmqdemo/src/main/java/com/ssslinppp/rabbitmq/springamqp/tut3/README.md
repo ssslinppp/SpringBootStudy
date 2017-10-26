@@ -8,10 +8,11 @@
 3. Consumer从Queue消费消息；
 
 ## Exchange类型
-1. direct：
+共4种，简单介绍路由规则：
+1. direct：匹配两个routingKey是否相同，相等时才进行路由，适合生产者-消费者模式；
 2. topic：
 3. headers：
-4. fanout：本示例程序使用该类型的Exchange；
+4. fanout：会忽略routingKey，exchange发送message到所有绑定的queue上，适合常规的发布/订阅模式；
 
 ### Direct Exchange 
 The direct exchange type works as follows:

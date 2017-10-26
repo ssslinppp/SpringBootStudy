@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * Description：发布/订阅模式<br/>
+ * https://www.rabbitmq.com/tutorials/tutorial-three-spring-amqp.html
+ * <p>
  * User: liulin <br/>
  * Date: 2017/10/26 <br/>
  * Time: 14:19 <br/>

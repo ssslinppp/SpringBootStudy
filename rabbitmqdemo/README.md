@@ -30,7 +30,7 @@ Java版本使用如下jar（说明：若是使用）：
 ```
 
 # demo1： 单生产者-单消费者 
-![单生产者-单消费者](https://www.rabbitmq.com/img/tutorials/python-one.png) 
+![单生产者-单消费者官方示例](https://www.rabbitmq.com/img/tutorials/python-one.png) 
 
 - Java版本：[单生产者单消费者](https://www.rabbitmq.com/tutorials/tutorial-one-java.html)     
 程序位置：java.demo1包下面
@@ -44,7 +44,7 @@ spring.profiles.active=hello-world, sender, receiver
 ---
 
 # demo2: 单生产者-多消费者 
-[Work queues](https://www.rabbitmq.com/tutorials/tutorial-two-java.html)  
+[Work queues官方示例](https://www.rabbitmq.com/tutorials/tutorial-two-java.html)  
 ![workQueue](https://www.rabbitmq.com/img/tutorials/python-two.png)   
 application.properties配置
 ```properties
@@ -58,7 +58,7 @@ spring.profiles.active=work-queues, sender, receiver
 ---
 
 # demo3: 发布/订阅 
-[Publish/Subscribe](https://www.rabbitmq.com/tutorials/tutorial-three-spring-amqp.html)    
+[Publish/Subscribe官方示例](https://www.rabbitmq.com/tutorials/tutorial-three-spring-amqp.html)    
 ![发布/订阅](https://www.rabbitmq.com/img/tutorials/exchanges.png)  
 - 消费广播到多个消费者进行消费；
 - 使用fanout pattern；
@@ -69,6 +69,29 @@ spring.profiles.active=pub-sub, receiver , sender
 ```
 
 详细描述参见：[发布/订阅详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut3)
+
+---
+
+# demo4: Routing
+[Routing官方示例](http://www.rabbitmq.com/tutorials/tutorial-four-spring-amqp.html)    
+### Direct exchange 模式进行route结构图
+![direct-exchange](http://www.rabbitmq.com/img/tutorials/direct-exchange.png)
+a message goes to the queues whose `binding key` exactly matches the `routing key` of the message;（相等时才路由）       
+
+### Multiple bindings
+![Multiple bindings](http://www.rabbitmq.com/img/tutorials/direct-exchange-multiple.png)  
+两个Queue使用相同的BingingKey(black) ==> 效果类似于：发布/订阅模式（demo3）；  
+
+
+### 完整的结构图
+![together](http://www.rabbitmq.com/img/tutorials/python-four.png)  
+
+application.properties配置
+```properties
+pring.profiles.active=routing, receiver , sender  
+```
+
+详细描述参见：[发布/订阅详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut4)
 
 
 
