@@ -2,6 +2,13 @@
 本示例程序全部来自rabbitmq官方示例程序，[rabbitmq-demo](https://www.rabbitmq.com/getstarted.html)；          
 官方共有6个demo，针对不同的语言（如 C#，Java，Spring-AMQP等），都有不同的示例程序；     
 本示例程序主要是Spring-AMQP的参考示例，如果需要其他语言的参考示例，可以参考官网；
+---
+# rabbitmq简介
+## 核心架构图
+![核心架构图](https://lh3.googleusercontent.com/TmA6flkGzB1yc1xK6lGbJZ0YYqO__39trLIPxM62VUjsr09wClmbv9mT3WX4F0cuDssmkiHkekWR6AvXY0iVScuksmLxyM27FaJGYbgPezCIjRs-l8Ct3MfuUU3bRbpfWT6dhVBO)   
+## [AMQP 0-9-1 Model Explained](https://www.rabbitmq.com/tutorials/amqp-concepts.html) 
+
+---
 # jar包说明
 - Java版本：  
 Java版本使用如下jar（说明：若是使用）：
@@ -23,7 +30,7 @@ Java版本使用如下jar（说明：若是使用）：
 ```
 
 # demo1： 单生产者-单消费者 
-https://www.rabbitmq.com/img/tutorials/python-one.png 
+![单生产者-单消费者](https://www.rabbitmq.com/img/tutorials/python-one.png) 
 
 - Java版本：[单生产者单消费者](https://www.rabbitmq.com/tutorials/tutorial-one-java.html)     
 程序位置：java.demo1包下面
@@ -34,9 +41,11 @@ application.properties配置
 spring.profiles.active=hello-world, sender, receiver
 ```
 
+---
+
 # demo2: 单生产者-多消费者 
 [Work queues](https://www.rabbitmq.com/tutorials/tutorial-two-java.html)  
-https://www.rabbitmq.com/img/tutorials/python-two.png   
+![workQueue](https://www.rabbitmq.com/img/tutorials/python-two.png)   
 application.properties配置
 ```properties
 spring.profiles.active=work-queues, sender, receiver
@@ -75,7 +84,7 @@ but RabbitMQ will eat more and more memory as it won't be able to release any un
 - 结果（弊端）：可能结果是，一个消费者一直执行繁忙的任务，另一个消费者，几乎不怎么执行工作；
 
 ### Fair分发策略（spring-amqp默认策略）
-https://www.rabbitmq.com/img/tutorials/prefetch-count.png
+![prefetch](https://www.rabbitmq.com/img/tutorials/prefetch-count.png)
 - `DEFAULT_PREFETCH_COUNT=1`: `SimpleMessageListenerContainer`默认设置；    
   表示：同一时间，不要给同一个消费者超过1个以上的任务，即：如果消费者没有消费完Message，就不要再给他派发新消息；   
   实现方式： 消费者消费完成后，会发送`应答`，监听器没接收到应答，就不会给该消费者派发新消息；
@@ -87,6 +96,22 @@ TODO
 1. 消息默认开启了持久化；
 2. 使用Fair分发策略；
 3. 若消费者挂掉，则Message会重新放入Queue，给下一个消费者消费；
+
+---
+
+# demo3: 发布/订阅 
+[Publish/Subscribe](https://www.rabbitmq.com/tutorials/tutorial-three-spring-amqp.html)    
+![发布/订阅](https://www.rabbitmq.com/img/tutorials/exchanges.png)  
+- 消费广播到多个消费者进行消费；
+- 使用fanout pattern；
+
+application.properties配置
+```properties
+spring.profiles.active=work-queues, sender, receiver
+```
+
+详细描述参见：[发布/订阅详细](xxx)
+
 
 
 
