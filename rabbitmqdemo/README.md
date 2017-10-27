@@ -1,7 +1,11 @@
 # 概述
+
 本示例程序全部来自rabbitmq官方示例程序，[rabbitmq-demo](https://www.rabbitmq.com/getstarted.html)；          
 官方共有6个demo，针对不同的语言（如 C#，Java，Spring-AMQP等），都有不同的示例程序；     
 本示例程序主要是Spring-AMQP的参考示例，如果需要其他语言的参考示例，可以参考官网；
+
+## rabbitmq模拟器
+[模拟器](http://tryrabbitmq.com/)
 ---
 # rabbitmq简介
 ## 核心架构图
