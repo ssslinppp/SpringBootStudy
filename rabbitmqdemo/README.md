@@ -17,13 +17,14 @@
 - routingKey：Exchange-->Binging-->Queue，Binging有一个Key值，叫routingKey或bingingKey;
 - bingingKey：Exchange-->Binging-->Queue，Binging有一个Key值，bingingKey;   
 
-### 核心理解
+## 核心理解
 4种不同的Exchange，对routingKey的解释都不相同；   
 对routingKey的不同解释，决定了Exchange路由Message到Queue的不同方案；  
 1. direct exchange： 匹配2个routingKey（即routingKey和bingingKey）是否相等，相等时才进行消息路由；
 2. fanout exchange： 忽略routingKey，会将Message路由到所有绑定的Queue；
 3. topic exchange： routingKey格式形如`aaa.bbb.xxx`、`*.ccc.dd.#`，类似正则表达式匹配；
 4. headers exchange：
+
 
 ---
 # jar包说明
@@ -37,6 +38,7 @@ Java版本使用如下jar（说明：若是使用）：
 </dependency>
 ```
 - Spring-AMQP版本：  
+[Spring AMQP 官方详细文章](https://docs.spring.io/spring-amqp/reference/htmlsingle/)   
 使用Profile配置各个demo的运行选择，当
 使用如下Jar包：
 ```
@@ -128,7 +130,16 @@ pring.profiles.active=topics, receiver , sender
 
 详细描述参见：[Topics](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut5)
 
+---
 
+# demo6： RPC over RabbitMQ 
+[RPC官方示例](https://www.rabbitmq.com/tutorials/tutorial-six-spring-amqp.html)   
+## 结构图
+![架构图](https://www.rabbitmq.com/img/tutorials/python-six.png)    
 
-
-
+application.properties配置
+```properties
+spring.profiles.active=rpc,server
+#spring.profiles.active=rpc,client
+```
+详细描述参见：[RPC](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut6)
