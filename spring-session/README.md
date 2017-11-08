@@ -1,5 +1,5 @@
 # 概述
-[分布式session之spring-session](http://images2017.cnblogs.com/blog/731047/201711/731047-20171108155323575-436390719.jpg)      
+![分布式session之spring-session](http://images2017.cnblogs.com/blog/731047/201711/731047-20171108155323575-436390719.jpg)      
 Session用于保存用户信息，通常一个Session保存一个用户信息，在以Tomcat为Servlet Container的web应用中，用户信息都保存在HttpSession中；  
 当用户发起请求时，都会将SessionId传递过来，服务器根据传递的SessionId就可以找到对应的Session；   
 
