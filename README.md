@@ -12,5 +12,8 @@
 1. rabbitmq官方教程：包括6种不同的Springboot-AMQP应用示例；  
 [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
 
+## spring-session
+分布式session；
+
 
 
