@@ -15,5 +15,8 @@
 ## spring-session
 分布式session；
 
+## properties-reader
+读取 `*.properties`文件中的内容；
+
 
 
