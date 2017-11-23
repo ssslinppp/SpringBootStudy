@@ -13,5 +13,4 @@ import java.util.Map;
 @Configuration
 public class MapConfig {
     private Map<String, Person> persons = Maps.newHashMap();
-
 }

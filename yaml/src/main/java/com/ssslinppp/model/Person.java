@@ -21,7 +21,7 @@ public class Person {
     private boolean isOld;
 
     private List<String> address; //演示了3种不同的yaml配置方式
-    private Person father; //TODO 通过引用的方式
+    private Person father; //TODO 通过引用的方式（未完成）
     private List<Book> books;
 
     private Map<String, String> maps;
