@@ -18,5 +18,8 @@
 ## properties-reader
 读取 `*.properties`文件中的内容；
 
+## yaml
+spring boot读取yaml文件
+
 
 
