@@ -206,6 +206,33 @@ public class StringDateConverter implements Converter<String, Date> {
 ```
 ---
 
+## @ConfigurationProperties Validation
+`@ConfigurationProperties` 支持 JSR-303 bean validation – javax.validation
+示例：
+```
+package com.mkyong;
+
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+@Component
+@ConfigurationProperties
+public class GlobalProperties {
+    @Max(5)
+    @Min(0)
+    private int threadPool;
+
+    @NotEmpty
+    private String email;
+
+    //getters and setters
+}
+```
+
 # 参考
 https://en.wikipedia.org/wiki/YAML   
 http://www.yaml.org/spec/1.2/spec.html  
