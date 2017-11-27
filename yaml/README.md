@@ -233,8 +233,38 @@ public class GlobalProperties {
 }
 ```
 
+## 自定义yaml源
+springboot中，yaml文件不支持注解：`@PropertySource("classpath:xxx.yaml")`，默认的yaml文件为：`application.yml`;    
+如果想要配置使用其他yaml文件，一种方式是：在所有bean加载之前定义好yaml源，并将yaml文件属性配置到环境变量中，代码如下：
+```java
+@Configuration
+public class YamlFileApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        try {
+//            Resource resource = applicationContext.getResource("classpath:/config/myConfig.yml"); //方式1
+            Resource resource = new ClassPathResource("/config/myConfig.yml");  //方式2
+
+            YamlPropertySourceLoader sourceLoader = new YamlPropertySourceLoader();
+            PropertySource<?> yamlTestProperties = sourceLoader.load("yaml", resource, null);
+
+            //添加到环境变量中
+            applicationContext.getEnvironment().getPropertySources().addFirst(yamlTestProperties);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+```
+参考：    
+[【ApplicationContextInitializer】springboot如何在所有bean初始化之前加载一个自定义类](https://ssslinppp.github.io/2017/11/27/%E3%80%90ApplicationContextInitializer%E3%80%91springboot%E5%A6%82%E4%BD%95%E5%9C%A8%E6%89%80%E6%9C%89bean%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B9%8B%E5%89%8D%E5%8A%A0%E8%BD%BD%E4%B8%80%E4%B8%AA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB/)
+
+
+
 # 参考
 https://en.wikipedia.org/wiki/YAML   
 http://www.yaml.org/spec/1.2/spec.html  
-http://www.ruanyifeng.com/blog/2016/07/yaml.html   
+http://www.ruanyifeng.com/blog/2016/07/yaml.html
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html  
+
 
