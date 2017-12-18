@@ -76,7 +76,7 @@ spring.profiles.active=work-queues, sender, receiver
 #spring.profiles.active=work-queues, receiver
 ```
 
-详细描述参见：[单生产者-多消费者详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut2)
+详细描述参见：[单生产者-多消费者详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmq/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut2)
 
 ---
 
@@ -91,7 +91,7 @@ application.properties配置
 spring.profiles.active=pub-sub, receiver , sender 
 ```
 
-详细描述参见：[发布/订阅详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut3)
+详细描述参见：[发布/订阅详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmq/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut3)
 
 ---
 
@@ -114,7 +114,7 @@ application.properties配置
 pring.profiles.active=routing, receiver , sender  
 ```
 
-详细描述参见：[发布/订阅详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut4)
+详细描述参见：[发布/订阅详细](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmq/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut4)
 
 ---
 
@@ -132,7 +132,7 @@ application.properties配置
 pring.profiles.active=topics, receiver , sender 
 ```
 
-详细描述参见：[Topics](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut5)
+详细描述参见：[Topics](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmq/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut5)
 
 ---
 
@@ -146,4 +146,4 @@ application.properties配置
 spring.profiles.active=rpc,server
 #spring.profiles.active=rpc,client
 ```
-详细描述参见：[RPC](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut6)
+详细描述参见：[RPC](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmq/rabbitmqdemo/src/main/java/com/ssslinppp/rabbitmq/springamqp/tut6)
