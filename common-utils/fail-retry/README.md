@@ -7,7 +7,8 @@
 ```
 @Service
 public class MyFailService {
-//    @FailRetry(handleExceptionMethod = "doException", beforeExceptionalReturn = "allRetryFail")
+
+    //    @FailRetry(handleExceptionMethod = "doException", beforeExceptionalReturn = "allRetryFail")
     @FailRetry
     public String query(int id) {
         System.out.println("### queryId: " + id);
@@ -20,7 +21,7 @@ public class MyFailService {
     }
 
     public void allRetryFail(String methodName, Object[] params) {
-        String msg = String.format("所有的失败重试都已结束,方法名：%s ，参数列表: %s ", methodName, Arrays.asList(params));
+        String msg = String.format("所有的失败重试都已结束,方法名：%s ，参数列表: %s %s", methodName, Arrays.asList(params));
         System.out.println(msg);
     }
 }

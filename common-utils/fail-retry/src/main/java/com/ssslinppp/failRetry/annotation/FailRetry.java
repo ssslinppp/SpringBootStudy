@@ -71,9 +71,9 @@ public @interface FailRetry {
      * <p>
      * 示例：
      * <pre>{@code
-     *  public void doException(String methodName, Object[] params, Exception e) {
-     *        // do something
-     * }
+     *  public void allRetryFail(String methodName, Object[] params) {
+     *          // do something
+     *  }
      * }</pre>
      *
      * @return

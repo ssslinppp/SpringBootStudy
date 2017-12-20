@@ -28,11 +28,11 @@ public abstract class FailRetrySupport {
     protected void handleException(String methodName, Object[] params, Exception e) {
         String msg = String.format("FailRetrySupport - {methodName: %s, params: %s ，Exception: %s",
                 methodName, Arrays.asList(params), e.getMessage());
-//        logger.error(msg, e);
-        logger.error(msg);
+        logger.error(msg, e);
     }
 
     protected void beforeExceptionalReturn(String methodName, Object[] params) {
-        logger.warn("FailRetrySupport - all fail retry have finished, [method: {} , params: {}]", methodName, Arrays.asList(params));
+        logger.error("FailRetrySupport - all fail retry have finished, [method: {} , params: {}]",
+                methodName, Arrays.asList(params));
     }
 }

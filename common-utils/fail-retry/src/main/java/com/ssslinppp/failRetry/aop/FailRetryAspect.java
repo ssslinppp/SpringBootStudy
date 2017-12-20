@@ -13,7 +13,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -113,7 +112,7 @@ public class FailRetryAspect extends FailRetrySupport {
      * @param failRetry
      * @throws Throwable
      */
-    private void doBeforeExceptionalReturn(Object target, String methodName, Object[] targetParams, FailRetry failRetry) {
+    private void doBeforeExceptionalReturn(Object target, String methodName, Object[] targetParams, FailRetry failRetry) throws Throwable {
         if (StringUtils.isEmpty(failRetry.beforeExceptionalReturn())) {
             super.beforeExceptionalReturn(methodName, targetParams);
         } else {
@@ -138,12 +137,7 @@ public class FailRetryAspect extends FailRetrySupport {
             if (ObjectUtils.isEmpty(beforeReturnMethod)) {
                 super.beforeExceptionalReturn(methodName, targetParams);
             } else {
-                try {
-                    beforeReturnMethod.invoke(target, params.toArray());
-                } catch (Exception e) {
-                    logger.error("FailRetryAspect - invoke beforeReturnMethod failed, [method: {}, params: {}, exception: {}]",
-                            beforeReturnMethod, Arrays.asList(params), e.getCause());
-                }
+                beforeReturnMethod.invoke(target, params.toArray());
             }
         }
     }
