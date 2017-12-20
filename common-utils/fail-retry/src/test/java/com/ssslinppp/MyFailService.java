@@ -4,6 +4,7 @@ import com.ssslinppp.failRetry.annotation.FailRetry;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Desc:
@@ -20,7 +21,11 @@ public class MyFailService {
     @FailRetry
     public String query(int id) {
         System.out.println("### queryId: " + id);
-        throw new RuntimeException("### query exception....");
+        if (new Random().nextInt() % 3 != 0) {
+            throw new RuntimeException("### query exception....");
+        }
+        System.out.println("### queryId success: " + id);
+        return null;
     }
 
     public void doException(String methodName, Object[] params, Exception e) {
