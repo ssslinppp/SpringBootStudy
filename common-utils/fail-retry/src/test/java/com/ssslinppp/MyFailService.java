@@ -15,7 +15,8 @@ import java.util.Arrays;
 @Service
 public class MyFailService {
 
-    //    @FailRetry(handleExceptionMethod = "doException", beforeExceptionalReturn = "allRetryFail")
+    //    @FailRetry(handleExceptionMethod = "doException", beforeExceptionalReturn = "allRetryFail", interval = 5_000)
+//    @FailRetry(interval = 3_000)
     @FailRetry
     public String query(int id) {
         System.out.println("### queryId: " + id);

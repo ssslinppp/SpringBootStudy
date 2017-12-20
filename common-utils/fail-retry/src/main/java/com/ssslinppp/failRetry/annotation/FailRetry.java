@@ -23,6 +23,13 @@ public @interface FailRetry {
     int maxRetryCount() default 3;
 
     /**
+     * 两次重试之间的时间间隔(毫秒)，默认：500ms
+     *
+     * @return
+     */
+    long interval() default 500;
+
+    /**
      * 异常处理，需传入一个方法名；
      * <p>
      * 默认的异常处理行为：仅仅是记录日志

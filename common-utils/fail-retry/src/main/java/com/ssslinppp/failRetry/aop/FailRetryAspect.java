@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Desc:
@@ -47,6 +48,7 @@ public class FailRetryAspect extends FailRetrySupport {
                     return pjp.proceed();
                 } catch (Exception e) {
                     doHandleException(target, signature.toString(), pjp.getArgs(), failRetry, e);
+                    TimeUnit.MILLISECONDS.sleep(failRetry.interval());
                 }
             }
         } finally {
