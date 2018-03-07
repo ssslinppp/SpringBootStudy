@@ -9,8 +9,8 @@
 
 ## Exchange类型
 共4种，简单介绍路由规则：
-1. direct：匹配两个routingKey是否相同，相等时才进行路由，适合生产者-消费者模式；
-2. topic：
+1. direct：匹配两个routingKey是否相同，相等时才进行路由，适合生产者-消费者模式（点对点）；
+2. 【topic】：实战中很重要的类型，可以进行类似正则表达式的方式匹配，功能比较强大；
 3. headers：
 4. fanout：会忽略routingKey，exchange发送message到所有绑定的queue上，适合常规的发布/订阅模式；
 
@@ -36,6 +36,24 @@ The fanout exchange is trivial to design and implement. This exchange type, and 
 called **amq.fanout**, are mandatory.
 
 ### Topic Exchange
+#### routingKey的模式
+- 发送端的routingKey为R，Queue绑定到Exchange的routingKey为P，只有R和P相匹配才会进行路由；
+- routing组成：由1个或多个word组成，word之间以`.`分割，如：aaa.bbb.ccc 
+- routingKey限制：只能由`[A-Z a-z 1-9]`以及`*`和`#`组成；
+- `*`: 匹配单个word；
+- `#`：匹配0~N个word；
+
+示例：
+```
+routingKey: *.stock.#
+
+匹配结果：
+usd.stock (OK)
+eur.stock.db (OK)
+stock.nasdaq. (NotOK)
+```
+
+#### 详细介绍如下
 The topic exchange type works as follows:
 1. A message queue binds to the exchange using a routing pattern, P.
 2. A publisher sends the exchange a message with the routing key R.
