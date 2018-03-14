@@ -43,8 +43,27 @@ Exchange用于转发消息，但是它**不会做存储** ，如果没有 Queue 
 1. 消息队列持久化；
 2. 消息持久化；
 
+上述持久化只是部分持久化，并不能完全保证消息的不丢失；
+
 #### 消息队列Queue持久化
 声明Queue时，将持久化标志`durable`设置为true，代表是一个持久的队列，那么在服务重启后，也会存在。   
+`durable`官方解释：
+```
+durable: 
+If set when creating a new queue, the queue will be marked as durable. 
+Durable queues remain active when a server restarts. 
+Non-durable queues (transient queues) are purged if/when a server restarts.
+
+Note that durable queues do not necessarily hold persistent messages, 
+(即：若消息不是持久性的，即使队列是持久性的，重启后，队列不丢失，消息也会丢失)
+
+although it does not make sense to send persistent messages to a transient queue.
+(发送持久消息  到  暂时队列是没有意义的)
+
+The server MUST recreate the durable queue after a restart.
+The server MUST support both durable and transient queues.
+```
+
 如下是一个类库的示例:
 ```
 /**
@@ -63,6 +82,17 @@ public Queue(String name, boolean durable, boolean exclusive, boolean autoDelete
 #### 消息持久化
 队列是可以被持久化，但是里面的消息是否为持久化那还要看消息的持久化设置。   
 也就是说，如果重启之前那个queue里面还有没有发出去的消息的话，重启之后那队列里面是不是还存在原来的消息，这个就要取决于发送者在发送消息时对消息的设置了。
+
+```
+// TODO 这个方案没有经过确认，需要进一步研究
+channel.basic_publish(exchange='',  
+                      routing_key="task_queue",  
+                      body=message,  
+                      properties=pika.BasicProperties(  
+                         delivery_mode = 2, # make message persistent  
+                      ))  
+```
+
 
 ---
 
