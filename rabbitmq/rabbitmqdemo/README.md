@@ -1,3 +1,6 @@
+[[__TOC__]]
+---
+
 # 概述
 
 本示例程序全部来自rabbitmq官方示例程序，[rabbitmq-demo](https://www.rabbitmq.com/getstarted.html)；          
