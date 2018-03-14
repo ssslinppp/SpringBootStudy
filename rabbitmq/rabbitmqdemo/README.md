@@ -13,7 +13,8 @@
 ![数据流转图](http://img.it610.com/image/product/e4ea0bc1d9a54f9396d3078202782532.jpg)    
 ![架构图](http://upload-images.jianshu.io/upload_images/2799767-05b3dc7216205c41.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-## [AMQP 0-9-1 Model Explained](https://www.rabbitmq.com/tutorials/amqp-concepts.html) 
+## [AMQP 0-9-1 Model Explained](https://www.rabbitmq.com/tutorials/amqp-concepts.html)
+## [amqp-0-9-1-reference：讲述了所有理论概念](http://www.rabbitmq.com/amqp-0-9-1-reference.html) 
 
 ## 重要语法说明
 - producer或publisher: 消息生产者/发布者，即：产生消息的；
@@ -83,8 +84,31 @@ public Queue(String name, boolean durable, boolean exclusive, boolean autoDelete
 队列是可以被持久化，但是里面的消息是否为持久化那还要看消息的持久化设置。   
 也就是说，如果重启之前那个queue里面还有没有发出去的消息的话，重启之后那队列里面是不是还存在原来的消息，这个就要取决于发送者在发送消息时对消息的设置了。
 
+在发送消息时，通过设置属性值（`delivery_mode=1 or 2`）：
+`|octet delivery-mode|	Non-persistent (1) or persistent (2).|`
+
+完整的属性值可参考(搜索：`delivery-mode`)：[amqp-0-9-1-reference](http://www.rabbitmq.com/amqp-0-9-1-reference.html)  
+
+|属性名|属性值|
+|---|---|
+|shortstr content-type|	MIME content type.|
+|shortstr content-encoding|	MIME content encoding.|
+|table headers|	Message header field table.|
+|octet delivery-mode|	Non-persistent (1) or persistent (2).|
+|octet priority|	Message priority, 0 to 9.|
+|shortstr correlation-id|	Application correlation identifier.|
+|shortstr reply-to|	Address to reply to.|
+|shortstr expiration|	Message expiration specification.|
+|shortstr message-id|	Application message identifier.|
+|timestamp timestamp|	Message timestamp.|
+|shortstr type	|Message type name.|
+|shortstr user-id|	Creating user id.|
+|shortstr app-id|	Creating application id.|
+|shortstr reserved|	Reserved, must be empty.|
+
+
+代码实现示例（spring boot中的代码设置 TODO）：
 ```
-// TODO 这个方案没有经过确认，需要进一步研究
 channel.basic_publish(exchange='',  
                       routing_key="task_queue",  
                       body=message,  
@@ -92,7 +116,6 @@ channel.basic_publish(exchange='',
                          delivery_mode = 2, # make message persistent  
                       ))  
 ```
-
 
 ---
 
