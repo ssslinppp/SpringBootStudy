@@ -36,6 +36,60 @@
 Exchange用于转发消息，但是它**不会做存储** ，如果没有 Queue bind到Exchange的话，它会直接丢弃掉Producer发送过来的消息
 
 ---
+
+### 持久化
+为了保证在RabbitMQ退出或者crash了数据仍没有丢失，需要将queue和Message都要持久化。   
+即持久化包括：
+1. 消息队列持久化；
+2. 消息持久化；
+
+#### 消息队列Queue持久化
+声明Queue时，将持久化标志`durable`设置为true，代表是一个持久的队列，那么在服务重启后，也会存在。   
+如下是一个类库的示例:
+```
+/**
+ * Construct a new queue, given a name, durability, exclusive and auto-delete flags.
+ * @param name the name of the queue.
+ * @param durable true if we are declaring a durable queue (the queue will survive a server restart)
+ * @param exclusive true if we are declaring an exclusive queue (the queue will only be used by the declarer's
+ * connection)
+ * @param autoDelete true if the server should delete the queue when it is no longer in use
+ */
+public Queue(String name, boolean durable, boolean exclusive, boolean autoDelete) {
+	this(name, durable, exclusive, autoDelete, null);
+}
+```
+
+#### 消息持久化
+队列是可以被持久化，但是里面的消息是否为持久化那还要看消息的持久化设置。   
+也就是说，如果重启之前那个queue里面还有没有发出去的消息的话，重启之后那队列里面是不是还存在原来的消息，这个就要取决于发送者在发送消息时对消息的设置了。
+
+---
+
+### amqp-0-9-1协议中：basic.publish()中 mandatory 
+官方解释：
+```
+ This flag tells the server how to react if the message cannot be routed to a queue. 
+ If this flag is set, the server will return an unroutable message with a Return method. 
+ If this flag is zero, the server silently drops the message.
+```
+
+当Exchange中的Message**无法route到任何一个Queue**时，对Message的处理对策；    
+出现上述情况的原因主要有2种：
+1. 声明 exchange后**未绑定**任何queue；
+2. 声明 exchange后绑定了queue，但发送到该exchange上的message所使用的routingKey不匹配任何bindingKey;
+
+概括来说，mandatory标志(true标志)告诉服务器**至少**将该消息route到一个队列中，否则将消息返还给生产者;
+如果没有设置该标志，则消息默认静默丢弃；
+
+### `mandatory` vs `Publisher confirm` 
+- Publisher confirm机制：是用来确认 message 的可靠投递；
+- mandatory：用来确保在Exchang无法路由消息到queue时，message不会被丢弃。
+
+
+
+
+---
 # jar包说明
 ## Java版本  
 Java版本使用如下jar（说明：若是使用）：

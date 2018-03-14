@@ -1,5 +1,8 @@
 package com.ssslinppp.config;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,6 +20,50 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
     private static final String LOG_TOP_EXCHANGE_NAME = "practice.log.level.exchage";
+
+    ////////////////////// 设置Queue 并绑定 start /////////////////////
+    /// 在消息发送端设置Queue，并不是为了消费消息，而是为了保证发送到
+    /// Exchange中的消息不会被丢失，可以路由到Queue中保存
+    ///////////////////////////////////////////////////////////
+    private static final String LOG_ROUTING_KEY_ERR = "*.err.#";
+    private static final String LOG_ROUTING_KEY_WARN = "*.warn.#";
+    private static final String LOG_ROUTING_KEY_INFO = "*.info.#";
+    private static final String LOG_ROUTING_KEY_DEBUG = "*.debug.#";
+
+    //// queue: 绑定error warn
+    @Bean
+    public Queue queueOfErrWarn() {
+        return new Queue("practice.log.error.warn.queue");
+    }
+
+    @Bean
+    public Binding bindingErr(TopicExchange topic, Queue queueOfErrWarn) {
+        return BindingBuilder.bind(queueOfErrWarn).to(topic).with(LOG_ROUTING_KEY_ERR);
+    }
+
+    @Bean
+    public Binding bindingWarn(TopicExchange topic, Queue queueOfErrWarn) {
+        return BindingBuilder.bind(queueOfErrWarn).to(topic).with(LOG_ROUTING_KEY_WARN);
+    }
+
+    //// queue: 绑定info debug
+    @Bean
+    public Queue queueOfInfoDebug() {
+        return new Queue("practice.log.Info.debug.queue");
+    }
+
+    @Bean
+    public Binding bindingInfo(TopicExchange topic, Queue queueOfInfoDebug) {
+        return BindingBuilder.bind(queueOfInfoDebug).to(topic).with(LOG_ROUTING_KEY_INFO);
+    }
+
+    @Bean
+    public Binding bindingDebug(TopicExchange topic, Queue queueOfInfoDebug) {
+        return BindingBuilder.bind(queueOfInfoDebug).to(topic).with(LOG_ROUTING_KEY_DEBUG);
+    }
+
+    ////////////////////// 设置Queue end /////////////////////
+
 
     @Bean
     public TopicExchange topic() {
