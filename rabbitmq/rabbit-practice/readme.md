@@ -1,3 +1,7 @@
+## 关于RabbitMq的总结
+[rabbitmq相关概念介绍](https://github.com/ssslinppp/SpringBootStudy/tree/master/rabbitmq/rabbitmqdemo)          
+
+---
 
 ## 需求说明
 ### 功能  
@@ -82,7 +86,7 @@ private static final String LOG_ROUTING_KEY_WARN = "*.warn.#";
     
 @Bean
     public Queue queueOfErrWarn() {
-        return new AnonymousQueue();
+        return new Queue("practice.log.err.warn.queue");
     }
 
     @Bean
@@ -104,7 +108,7 @@ private static final String LOG_ROUTING_KEY_DEBUG = "*.debug.#";
 
  @Bean
     public Queue queueOfInfoDebug() {
-        return new AnonymousQueue();
+        return new Queue("practice.log.Info.debug.queue");
     }
 
     @Bean
@@ -162,3 +166,20 @@ private void handleMsg(Message msg) throws InterruptedException, IOException {
     System.out.println("Deal [info/debug] log: " + message);
 }
 ```
+
+---
+
+# 注意点
+## 发送端消息持久化
+Exchange只用于转发消息，但是**不会做存储**，如果没有Queue bind 到Exchange 的话，它会直接丢**弃掉**Producer 发送过来的消息。         
+消费端最初使用**匿名Queue**接收，当消费端断掉后，Queue也自动删除了，导致发送到Exchange的消息全部被丢弃；   
+为了使发送端消息能够持久化，接收端的Queue也要设置为持久化的Queue；
+```
+new AnonymousQueue();   //匿名Queue
+new Queue("practice.log.Info.debug.queue");  //持久化队列
+```
+
+
+
+
+

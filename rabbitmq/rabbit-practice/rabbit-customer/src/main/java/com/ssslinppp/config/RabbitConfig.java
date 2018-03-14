@@ -1,6 +1,9 @@
 package com.ssslinppp.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +35,7 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     ///////////////////////  绑定 err/warn  //////////////////////////////////////////////
     @Bean
     public Queue queueOfErrWarn() {
-        return new AnonymousQueue();
+        return new Queue("practice.log.error.warn.queue");
     }
 
     @Bean
@@ -48,7 +51,8 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     ///////////////////////  绑定 info/debug  //////////////////////////////////////////////
     @Bean
     public Queue queueOfInfoDebug() {
-        return new AnonymousQueue();
+//        return new AnonymousQueue();  // 当使用匿名队列时，消费端停掉，Queue也会自动删除
+        return new Queue("practice.log.Info.debug.queue");
     }
 
     @Bean

@@ -32,6 +32,8 @@
 3. topic exchange： routingKey格式形如`aaa.bbb.xxx`、`*.ccc.dd.#`，类似正则表达式匹配；
 4. headers exchange：
 
+### Exchange
+Exchange用于转发消息，但是它**不会做存储** ，如果没有 Queue bind到Exchange的话，它会直接丢弃掉Producer发送过来的消息
 
 ---
 # jar包说明
