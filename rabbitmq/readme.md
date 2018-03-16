@@ -38,15 +38,25 @@ Exchange用于转发消息，但是它**不会做存储** ，如果没有 Queue 
 
 ---
 
-### 持久化
+# 需要解决的问题
+1. 消息持久化；
+2. 消费端应答（Consumer acknowledgements ）：消费端对broker的确认；
+3. 发布端确认(publisher confirms)：broker对publisher发送消息的确认；
+4. 消息可靠性保证：顺序保证等；
+5. 如何控制消费端负载；
+
+---
+
+## 持久化
 为了保证在RabbitMQ退出或者crash了数据仍没有丢失，需要将queue和Message都要持久化。   
 即持久化包括：
 1. 消息队列持久化；
 2. 消息持久化；
+3. Exchange的持久化;
 
 上述持久化只是部分持久化，并不能完全保证消息的不丢失；
 
-#### 消息队列Queue持久化
+### 消息队列Queue持久化
 声明Queue时，将持久化标志`durable`设置为true，代表是一个持久的队列，那么在服务重启后，也会存在。   
 `durable`官方解释：
 ```
@@ -80,7 +90,7 @@ public Queue(String name, boolean durable, boolean exclusive, boolean autoDelete
 }
 ```
 
-#### 消息持久化
+### 消息持久化
 队列是可以被持久化，但是里面的消息是否为持久化那还要看消息的持久化设置。   
 也就是说，如果重启之前那个queue里面还有没有发出去的消息的话，重启之后那队列里面是不是还存在原来的消息，这个就要取决于发送者在发送消息时对消息的设置了。
 
@@ -144,9 +154,11 @@ public enum MessageDeliveryMode {
 }
 ```
 
----
-
-### amqp-0-9-1协议中：basic.publish()中 mandatory 
+### 消息发送：如何保证Exchange中的消息进入Queue中保证
+AMQP中，Exchange是不保存消息的，发送端将消息发送到Exchange后，必须保证消息路由到Queue中，才能保证发送端的消息不丢失。     
+当没有任何Queue能够接收Exchange中的消息，此时该如何处理？就是下面要介绍的。
+ 
+#### amqp-0-9-1协议中：basic.publish()中 mandatory 
 官方解释：
 ```
  This flag tells the server how to react if the message cannot be routed to a queue. 
@@ -162,56 +174,90 @@ public enum MessageDeliveryMode {
 概括来说，mandatory标志(true标志)告诉服务器**至少**将该消息route到一个队列中，否则将消息返还给生产者;
 如果没有设置该标志，则消息默认静默丢弃；
 
-### `mandatory` vs `Publisher confirm` 
+#### `mandatory` vs `Publisher confirm` 
 - Publisher confirm机制：是用来确认 message 的可靠投递；
 - mandatory：用来确保在Exchang无法路由消息到queue时，message不会被丢弃。
 
 ---
 
-# 消费端确认
-## Delivery Identifiers: Delivery Tags
-消费者注册后，rabbitmq将消息交付给消费者时，都会带有一个“Delivery Tags”，这个是唯一的ID标识，id以整数的递增的方式实现。
+## 消费端应答
+[Consumer Acknowledgements and Publisher Confirms](https://www.rabbitmq.com/confirms.html)     
+[RabbitMQ ACK 机制的意义是什么？](https://www.zhihu.com/question/41976893)    
 
-## Acknowledgement Modes（消费端）
-### 自动确认模式
-- 发送之后，就认为是发送成功(fire-and-forget)
-- 消息不停的发送到消费端消费，无需等待消费端任何确认；
+#### 场景分析：消费端处理消息失败
+- Consumer 需要验证消息内容，不合法的消息会导致 consumer 出错：将消息发送给其他消费端处理毫无意义；
+- Consumer 需要将消息保存到数据库,数据库服务器挂掉会导致consumer出错：重试几次可能会解决问题；
+- Consumer 要根据消息内容发送HTTP请求，HTTP服务挂了会导致consumer出错：重试几次可能会解决问题；
+- Consumer 接收到消息，没来得及消费，自己就挂掉了：将消息发送给其他消费端，可以解决问题；
 
-缺点：
-- 可能造成消费端不堪重负;
+从上面分析可以知道，当消费端处理消息失败，是否需要将Message重新Requeue或者发送给其他消费者，应根据具体业务决定。    
+针对上面的各种情况，AMQP中使用`消息应答机制ACK`（acknowledge）来进行处理。  
 
-### 手动模式
-1. basic.ack: 肯定的确认；
-2. basic.nack: 否定的确认(RabbitMQ对AMQP 0-9-1的扩展),支持消息`批量确认`;
-3. basic.reject：否定的确认，消息消费失败后，直接从broker中将消息`delete`，`不支持批量确认`；
+#### 消费端移交确认
+broker将Message发送给customer，如何保证消息成功发送？以及如何保证消息被处理成功？     
 
-## Acknowledging Multiple Deliveries at Once(消息批量确认)
-- 一次确认多个消息发送，而不是每一个消息单独确认；
+##### 消息交付的唯一标识（broker-->customer     
+broker将Message发送给customer时，为了区分每次交付的消息，需要为每次的交付添加一个唯一标识，这个唯一标识就是：`Delivery Tags`；
+这个唯一的标识，是一个自增的整数；   
+当消费端消费完成，并对broker确认交付时，会将这个`delivery tag`作为参数发送给broker；    
+
+##### 消费端应答确认
+是否启用消费端应答确认，由消费端决定，在消费端订阅消息时就已经确定。               
+
+1. basic.ack: 肯定的确认(positive acknowledgements)；
+2. basic.nack: 否定的确认(RabbitMQ对AMQP 0-9-1的扩展),支持消息`批量确认`;(negative acknowledgements)
+3. basic.reject：否定的确认(negative acknowledgements)，消息消费失败后，直接从broker中将消息`delete`，`不支持批量确认`；
+
+`肯定确认`和`否定确认`都表示Message已经成功交付，并处理完成，此时broker端都应该将message删除（针对 basic.ack和basic.reject）；     
+两者的区别在于：
+1. 肯定确认：交付成功，并且消息也处理成功；
+2. 否定确认：交付成功，但消息并没有处理成功，broker端也应该把这个没有处理成功的消息delete；
+3. `basic.reject` vs `basic.nack`： nack是AMQP-0-9-1的扩展，支持消息批量确认，reject不支持；
+
+#### 消费端确认模式
+1. 自动确认模式：消息一旦从broker发送出去，就认为消息交付成功；
+2. 手动确认模式：
+
+**`自动确认模式` vs `手动确认模式`**
+- 自动确认模式: Message从broker发送出去，就表示交付成功（fire-and-forget），不需要Customer返回任何确认；
+- 自动确认模式: 以牺牲**安全性**（如：Message发送出去后，消费端还没来得及处理就挂掉，则消息将会丢失）为代价，来提高系统的**吞吐量**；
+- 自动确认模式: 可能导致Customer端**负载过重**（因为不需要确认，broker会不停的发消息，导致customer处理不过来）
+- 手动确认模式：可以有效控制消费端负载（通过`frefetch`参数），当消费端没有及时应答确认，broker将会停止或放缓消息的发送；
+
+##### 消息批量确认(delivery tags)
+当开启手动确认模式，消息交付若是一个一个的进行确认，将会导致网络带宽浪费，因此可以考虑将交付确认批量进行，这样可以节约网络带宽。     
+
+- 开启方式：`multiple`设置为true；     
 - basic.reject：不具备该功能；
 - basic.nack: 具备该功能；
 
-### 实现方式
-- multiple field： 设置为true；
-
-### 示例
+**示例**      
 假设：在Channel（ch）上有5,6,7,8这4个delivery tags未确认；      
 - 情况1，`delivery_tag=8 & multiple=true`： 则5,6,7,8这4个tags都将被确认；      
 - 情况2，`delivery_tag=8 & multiple=false`：则只有8被确认，而5,6,7将不会被被确认；
 
-## Channel Prefetch Count (QoS)[可以设置消费端消费的速率] 
-- 消息消费是`异步`完成的，手动确认也是`异步`的；
-- 有一部分消息是被消费了，但是还未来得及确认：`希望控制未被确认消息的size，防止无界的缓存`；
-- `prefetch count`：使用`basic.qos`方法设置该值可以控制未被确认消息的max size；
-- 当达到该最大值时，rabbitmq将停止交付消息进行消费；
-- 仅对`basic.qos`方法有效，对`basic.get`方法无效；
+##### 设置Channel的`Prefetch Count`：来限制Message的交付速度（保证消费端不会过载）
+消息都是通过channel发送的，每个channel都可以设置自己的`prefetch count`，那么什么是`prefetch count`呢？         
+我们知道，交付确认（delivery tag）是一个异步的过程，消费端可能有大量的消息累计起来，都没有进行交付确认，我们可以设置一个`未交付确认的max值(prefetch count)`，即：   
+当未确认的消息达到这个最大值时，broker将不在发送消息到消费端，这样就可以给消费端一个喘息的机会，不至于负载过重；     
+当有消息被确认时，未确认的消息小于这个最大值时，又可以继续通过channel向消费端继续发送消息了；   
+通过这个`prefetch`，可以有效的控制交付速度，保证消费端不会过载；
 
-### 示例
+**示例**            
 假设：在Channel(Ch)上有5,6,7,8共4个`未被确认`的消息，且ch的`prefetch count=4`；   
 结果：rabbitmq将不会再交付任何消息到该Channel上，除非有消息被确认；
 
-## 消费确认选择，prefetch设置以及吞吐量
+
+关于spring中prefetch的默认值：
+- 最初的默认值为：1，即每个消费端最多处理一条消息（导致消费端无法并发消息处理）；
+- 新版本的默认值修改为：250（不是很确定，反正是增大了），因为消息到消费端后，可能需要并发的消息处理，如果还是默认为1，将导致无法充分利用并发处理特性；
+
+##### 消费确认选择，prefetch设置以及吞吐量
 - 情况1：增大`prefetch`：提高向消费者传递消息的速度;
 - 情况2：自动确认模式可以产生最佳的传送速率;
+
+**应用场景建议**   
+- 自动确认模式：消费端能有效处理消息，且消息的处理速度比较稳定；
 
 应避免：
 1. `自动确认模式`；
@@ -240,6 +286,15 @@ public enum MessageDeliveryMode {
 - 失败重传：`TCP连接中断`或`消费端挂掉`，都会引起消息重新入队列，重新消费(手动消息确认时)；
 - 无法对同一个消息进行2次或2次以上的`确认`，否则会抛出异常；
 
+#### NACK
+Acknowledgment是消费端告诉broker当前消息是否成功消费，至于broker如何处理NACK，取决于消费端是否设置了`requeue`：
+1. 消费端设置`requeue=false`: 那么`NACK`后broker会删除消息的;
+2. 消费端设置`requeue=true`: `TODO`
+
+#### ACK
+Consumer做一个ACK，是为了告诉Broker这条消息已经被成功处理了（transaction committed）。    
+只要broker没收到消费端的ACK，broker就会一直保存着这条消息（**但不会 requeue，更不会分配给其他 consumer，直到当前 consumer 发生断开连接之类的异常**）。              
+RabbitMQ之所以是`保证移交(guaranteed delivery)`，这是一个关键。    
 
 ---
 
