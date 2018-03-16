@@ -125,6 +125,11 @@ private static final String LOG_ROUTING_KEY_DEBUG = "*.debug.#";
     }
 ```
 
+### 消费端-`手动确认`和`自动确认`
+处理Error/warn： 使用手动确认模式；
+处理INFO/Debug： 使用自动确认模式；
+
+
 ### 设置Json格式转换
 有两种不同的处理方式
 #### 方式1：使用MessageConverter直接转换Json为POJO对象
