@@ -107,14 +107,41 @@ public Queue(String name, boolean durable, boolean exclusive, boolean autoDelete
 |shortstr reserved|	Reserved, must be empty.|
 
 
-代码实现示例（spring boot中的代码设置 TODO）：
+**Spring-amqp中的源代码：默认消息是`持久化消息`**    
+在`org.springframework.amqp.core.MessageProperties.java`中定义了消息的属性：
 ```
-channel.basic_publish(exchange='',  
-                      routing_key="task_queue",  
-                      body=message,  
-                      properties=pika.BasicProperties(  
-                         delivery_mode = 2, # make message persistent  
-                      ))  
+// 消息默认是持久化的
+public static final MessageDeliveryMode DEFAULT_DELIVERY_MODE = MessageDeliveryMode.PERSISTENT;
+```
+看一看交付模式源代码：
+
+```
+// 消息的持久化属性定义
+public enum MessageDeliveryMode {
+	NON_PERSISTENT, PERSISTENT;
+
+	public static int toInt(MessageDeliveryMode mode) {
+		switch (mode) {
+		case NON_PERSISTENT:
+			return 1;
+		case PERSISTENT:
+			return 2;
+		default:
+			return -1;
+		}
+	}
+
+	public static MessageDeliveryMode fromInt(int modeAsNumber) {
+		switch (modeAsNumber) {
+		case 1:
+			return NON_PERSISTENT;
+		case 2:
+			return PERSISTENT;
+		default:
+			return null;
+		}
+	}
+}
 ```
 
 ---
