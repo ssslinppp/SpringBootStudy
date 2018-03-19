@@ -36,6 +36,12 @@
 ### Exchange
 Exchange用于转发消息，但是它**不会做存储** ，如果没有 Queue bind到Exchange的话，它会直接丢弃掉Producer发送过来的消息
 
+### Queue
+创建队列时的一些参数设置：
+1. exclusive：队列变为private，只有自己的应用程序才能使用该队列，应用场景示例：限制Queue的消费者个数（如：该队列只有1个消费者）；
+2. auto-delete: 顾名思义，不在使用时，自动删除；
+3. durable: 队列持久化的参数；
+
 ---
 
 # 需要解决的问题
