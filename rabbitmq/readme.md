@@ -37,10 +37,24 @@
 Exchange用于转发消息，但是它**不会做存储** ，如果没有 Queue bind到Exchange的话，它会直接丢弃掉Producer发送过来的消息
 
 ### Queue
+Queue的一些特性：
+- Queue可以存储消息（可以对比Exchange不存储消息），等待消费；   
+- 对负载均衡来说，队列是绝佳方案：1个Queue对应多个消费者，使用round-robin来分配消息；
+- queue是Message的终点(对于rabbitmq broker)来讲；
+
 创建队列时的一些参数设置：
 1. exclusive：队列变为private，只有自己的应用程序才能使用该队列，应用场景示例：限制Queue的消费者个数（如：该队列只有1个消费者）；
 2. auto-delete: 顾名思义，不在使用时，自动删除；
 3. durable: 队列持久化的参数；
+
+### Queue该由谁来创建？
+从前面分析可知，Exchange不存储Message，只做路由，Queue真正存储消息；    
+Producter只负责把消息发送到Exchange中，当没有任何Queue绑定Exchange时，Message将会被丢弃；     
+
+**建议：**             
+如果应用不能承担消息丢失的风险，应该让**producer和customer都尝试去创建Queue**；        
+如果可以承担消息丢失的风险，或者有方式来重新发布未处理的消息，则可以只让消费端来声明队列；
+
 
 ---
 
