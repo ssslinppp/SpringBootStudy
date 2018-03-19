@@ -214,6 +214,17 @@ broker将Message发送给customer时，为了区分每次交付的消息，需�
 2. 否定确认：交付成功，但消息并没有处理成功，broker端也应该把这个没有处理成功的消息delete；
 3. `basic.reject` vs `basic.nack`： nack是AMQP-0-9-1的扩展，支持消息批量确认，reject不支持；
 
+
+**消息requeue和死信队列（dead letter）**        
+当消息处理失败后，通过`basic.reject` or `basic.nack`来告诉broker消息处理失败，broker对于处理失败的Message该如何处理呢？？？     
+`basic.reject` or `basic.nack`方法中有一个参数为`requeue`：
+1. 当requeue=true：broker将会把Message重新入队列，然后发送给下一个消费者；
+2. 当requeue=false：broker不会将Message入队列（即：不会发送给下一个消费者），而是将这些Message存放在`dead letter`死信队列中；
+
+**死信队列(dead letter)**     
+专门用来存放那些**被拒绝**而**不重入队列**的消息。死信队列让你通过检测拒绝、未送达的消息来发现问题；    
+如果应用程序希望从死信队列中收益，则应该将`basic.reject` or `basic.nack`中的`requeue`参数设置为false（这一特性在高版本的rabbitmq支持）
+
 #### 消费端确认模式
 1. 自动确认模式：消息一旦从broker发送出去，就认为消息交付成功；
 2. 手动确认模式：
