@@ -68,11 +68,10 @@ Producter只负责把消息发送到Exchange中，当没有任何Queue绑定Exch
 ---
 
 ## 持久化
-为了保证在RabbitMQ退出或者crash了数据仍没有丢失，需要将queue和Message都要持久化。   
-即持久化包括：
-1. 消息队列持久化；
-2. 消息持久化；
-3. Exchange的持久化;
+为了保证在RabbitMQ退出或者crash了数据仍没有丢失，持久化必须至少包括3部分：
+1. 消息持久化（delivery mode设置为2）；
+2. 消息发送到持久化的Exchange;
+3. 到达持久化的消息队列；
 
 上述持久化只是部分持久化，并不能完全保证消息的不丢失；
 
