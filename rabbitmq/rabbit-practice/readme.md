@@ -10,11 +10,13 @@
 ### 发送端    
 负责发送4种日志级别的日志到RabbitMq中；
 
-### 接收端  
+### 消费端  
 负责从Rabbitmq中接收日志消息并处理，并能对不同级别的日志做不同的处理工作；   
 如：    
 对Error、Warn级别的日志，需要短信通知或邮件通知；    
 对Info、Debug级别的日志，简单的记录下即可；
+
+消费端需要并发的处理消息，提高性能；
 
 ### 程序设计思路
 采用RabbitMq的`TopicExchange`进行消息路由；         
@@ -125,9 +127,31 @@ private static final String LOG_ROUTING_KEY_DEBUG = "*.debug.#";
     }
 ```
 
+
 ### 消费端-`手动确认`和`自动确认`
 处理Error/warn： 使用手动确认模式；
 处理INFO/Debug： 使用自动确认模式；
+
+### 并发消息处理配置
+方式1：
+```
+spring.rabbitmq.listener.simple.concurrency=5
+spring.rabbitmq.listener.simple.max-concurrency=10
+```
+
+方式2：
+```
+@Bean
+public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.xxxx;
+    factory.setConcurrentConsumers(MIN_RABBIT_CONCURRENT_CONSUMERS);  //并发min线程数
+    factory.setMaxConcurrentConsumers(MAX_RABBIT_CONCURRENT_CONSUMERS); //并发max线程数
+    factory.xxxx;
+    factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+    return factory;
+}
+```
 
 
 ### 设置Json格式转换

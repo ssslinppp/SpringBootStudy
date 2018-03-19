@@ -22,8 +22,10 @@ public class CustomErrWarnLog {
      * @throws IOException
      */
     @RabbitListener(queues = "#{queueOfErrWarn.name}")
+//    @RabbitListener(containerFactory = "xxx",queues = "#{queueOfErrWarn.name}")
     public void receiveWithManualACK(ReceivedMessage msg, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag)
             throws Exception {
+        System.out.println("CurrentThread id: [" + Thread.currentThread().getId() + "]");
         /// 设置prefetch：用于控制流量，避免消费端负载过高
         /// 当未确认Message个数达到prefetch count时，broker将不再向channel中发送消息
         channel.basicQos(50, false);  // Per consumer limit
@@ -48,6 +50,6 @@ public class CustomErrWarnLog {
         if (random.nextBoolean()) {
             throw new RuntimeException("handle msg fail");
         }
-
+        Thread.sleep(1_000);
     }
 }
