@@ -209,6 +209,12 @@ Java示例：(发送端发送大量messages，使用确认模式)
 [程序-确认模式](https://raw.githubusercontent.com/rabbitmq/rabbitmq-perf-test/master/src/main/java/com/rabbitmq/examples/ConfirmDontLoseMessages.java)    
 
 下面将介绍一些发送端确认的细节。
+
+## 发送端确认：返回的内容
+发送端确认模式，要么使用`basic.ack (OK)`，要么使用`basic.nack (fail)`，且同一个Message有且最多只会发送1次。
+发送端确认模式只会返回Message的`delivery-tag`，并不会返回完整的消息内容，这个可以和`mandatory`作对比。
+
+
 ## 否定确认
 异常情况时，服务端无法处理消息，则`broker`发送`basic.nack`来进行`否定确认`；  
 
@@ -223,6 +229,7 @@ Java示例：(发送端发送大量messages，使用确认模式)
 - 消息持久化： 并不能保证消息不丢失（在写入disk前broker就挂掉）；
 
 ---
+# mandatory 标志的作用
 
 ### 消息发送：如何保证Exchange中的消息进入Queue中保证
 AMQP中，Exchange是不保存消息的，发送端将消息发送到Exchange后，必须保证消息路由到Queue中，才能保证发送端的消息不丢失。     
@@ -245,8 +252,8 @@ AMQP中，Exchange是不保存消息的，发送端将消息发送到Exchange后
 如果没有设置该标志，则消息默认静默丢弃；
 
 #### `mandatory` vs `Publisher confirm` 
-- Publisher confirm机制：是用来确认 message 的可靠投递；
-- mandatory：用来确保在Exchang无法路由消息到queue时，message不会被丢弃。
+- Publisher confirm机制：是用来确认message的可靠投递（替代事务），返回Message的`delivery-tag`，并不会返回完整的Message；
+- mandatory：用来确保在Exchang无法路由消息到queue时，message不会被丢弃，会返回完整的消息。
 
 ---
 
