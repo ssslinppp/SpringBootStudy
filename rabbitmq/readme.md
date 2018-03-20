@@ -173,6 +173,57 @@ public enum MessageDeliveryMode {
 }
 ```
 
+### 是否应该将消息持久化？
+消息的持久化，需要将消息写入磁盘，这样会大大降低Rabbitmq的性能（有时下降10倍都不止）。     
+
+---
+
+## 事务（不推荐使用）
+发布操作不返回任何消息给生产者，发送端如何确保Message送达到Queue中？？？              
+在 AMQP 0-9-1中，保证消息不丢失的唯一方法，就是使用事务；
+1. 开启Channel事务；
+2. 发送消息，提交事务；
+
+但使用事务会导致性能下降的很厉害，而且会使生产者应用产生同步，因此，不建议使用事务。
+
+是否有替代的方案呢？？？    
+可以使用`发送方确认模式（publisher confirm）`来代替事务。    
+
+### `事务` vs `发送端确认模式`
+- `事务`和`确认模式`无法共存：二者只能选择其一。   
+- 事务会产生同步，发送端确认是异步；
+- 发送端确认比事务更轻量；
+
+---
+
+# 发送端确认（publisher confirm）
+1. 设置确认模式：发送端在创建channel时，设置channel为`confirm`模式（`confirm.select`）；
+2. MessageID: 所有通过该channel发送的Message，都会指派一个**唯一的ID**(`delivery-tag`)；
+3. 消息确认：一旦消息**被投递到匹配的Queue后**，`broker`会发送`basic.ack`来确认Message已被处理（包含delivery-tag）；
+4. 发送端在收到确认后，会触发回调函数，可以用来处理消息确认；
+5. 如何rabbitmq broker发生错误，也可以显式的发送`nack(fail)`来告诉应用程序消息未确认；
+6. 异步：无法保证消息何时被确认；
+7. 批量消息确认: `multiple=true`；
+
+Java示例：(发送端发送大量messages，使用确认模式)
+[程序-确认模式](https://raw.githubusercontent.com/rabbitmq/rabbitmq-perf-test/master/src/main/java/com/rabbitmq/examples/ConfirmDontLoseMessages.java)    
+
+下面将介绍一些发送端确认的细节。
+## 否定确认
+异常情况时，服务端无法处理消息，则`broker`发送`basic.nack`来进行`否定确认`；  
+
+## 应答延时和持久化消息
+- 仅当消息被**持久化到disk之后**（Exchange、Queue、Message都设置为持久化），才会发送`basic.ack`应答；
+- 吞吐量提高建议：`异步处理应答`、`批量发送消息`;
+
+## 应答顺序
+当使用异步发送和持久化消息时，broker对消息的`确认顺序`可能和发送者的`消息发送顺序`不一致；
+
+## 发送确认 + 保证交付
+- 消息持久化： 并不能保证消息不丢失（在写入disk前broker就挂掉）；
+
+---
+
 ### 消息发送：如何保证Exchange中的消息进入Queue中保证
 AMQP中，Exchange是不保存消息的，发送端将消息发送到Exchange后，必须保证消息路由到Queue中，才能保证发送端的消息不丢失。     
 当没有任何Queue能够接收Exchange中的消息，此时该如何处理？就是下面要介绍的。
@@ -325,45 +376,6 @@ Acknowledgment是消费端告诉broker当前消息是否成功消费，至于bro
 Consumer做一个ACK，是为了告诉Broker这条消息已经被成功处理了（transaction committed）。    
 只要broker没收到消费端的ACK，broker就会一直保存着这条消息（**但不会 requeue，更不会分配给其他 consumer，直到当前 consumer 发生断开连接之类的异常**）。              
 RabbitMQ之所以是`保证移交(guaranteed delivery)`，这是一个关键。    
-
----
-
-# 发送端确认
-
-## Channel事务
-- 不推荐使用： 会严重降低吞吐量；
-
-在 AMQP 0-9-1中，保证消息不丢失的唯一方法，就是使用事务；
-1. 开启Channel事务；
-2. 发送消息，提交事务；
-
-## 类似消费端的应答确认机制
-- `confirm.select`: 应用于Channel时，表示使用`确认模式`；
-- `事务`和`确认模式`无法共存：二者只能选择其一；
-
-## 确认模式 (confirm.select)
-- 发送端使用`confirm.select`;
-- `broker`发送`basic.ack`来确认Message已被处理；
-- `delivery-tag`： 消息序列，具有唯一性；
-- `multiple=true`： 用于设置`批量消息确认`；
-- 无法保证消息何时被确认；
-- 确认模式：消息要么被`confirmed（OK）`，要么被`nack(fail)`，且only once；
-
-Java示例：(发送端发送大量messages，使用确认模式)
-[程序-确认模式](https://raw.githubusercontent.com/rabbitmq/rabbitmq-perf-test/master/src/main/java/com/rabbitmq/examples/ConfirmDontLoseMessages.java)    
-
-## 否定确认
-异常情况时，服务端无法处理消息，则`broker`发送`basic.nack`来进行`否定确认`；  
-
-## 应答延时和持久化消息
-- 仅当消息被持久化到disk之后，才会发送`basic.ack`应答；
-- 吞吐量提高建议：`异步处理应答`、`批量发送消息`;
-
-## 应答顺序
-当使用异步发送和持久化消息时，broker对消息的`确认顺序`可能和发送者的`消息发送顺序`不一致；
-
-## 发送确认 + 保证交付
-- 消息持久化： 并不能保证消息不丢失（在写入disk前broker就挂掉）；
 
 ---
 
