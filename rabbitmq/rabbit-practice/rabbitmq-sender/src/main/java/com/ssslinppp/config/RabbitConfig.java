@@ -1,11 +1,11 @@
 package com.ssslinppp.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import com.ssslinppp.confirm.CompleteMessageCorrelationData;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.CorrelationDataPostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,7 +74,45 @@ public class RabbitConfig {
     @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
+        rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());  // Json消息转换器
+
+        ////////////////////  publisher confirm ,start //////////////////////////////////////
+        //publisher Confirms callback ：当broker应答ack或nack时，会回调该方法
+        rabbitTemplate.setConfirmCallback((correlation, ack, reason) -> {
+            if (ack) {
+                System.out.println("publisher confirm [ack] for correlation: " + correlation);
+            } else {
+                //Message确认失败
+                System.out.println("publisher confirm [Nack] ,reason: " + reason + ", for correlation: " + correlation);
+            }
+        });
+
+        // 该处理器会在Message发送之前调用，用于更新或替换CorrelationData
+        rabbitTemplate.setCorrelationDataPostProcessor(new CorrelationDataPostProcessor() {
+            @Override
+            public CorrelationData postProcess(Message message, CorrelationData correlationData) {
+                // 只是简单的将发送的消息封装起来
+                return new CompleteMessageCorrelationData(correlationData != null ? correlationData.getId() : null, message);
+            }
+        });
+        ////////////////////  publisher confirm , end //////////////////////////////////////
+
+
+        //////////////////////////////// 设置 mandatory 属性 //////////////////////////////////////
+        ////// 当 Message发送到Exchange后，若没有任何Queue绑定该Exchange，则Message会返回给publisher /////////////
+        ////// 通过设置 returnCallback，publisher可以接收broker返回的Message ////////////////////////////////////
+        rabbitTemplate.setMandatory(true);
+        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
+            System.out.println("-------mandatory(true): exchange route msg to queue fail ------------");
+            System.out.println("Returned: " + message + "\nreplyCode: " + replyCode
+                    + "\nreplyText: " + replyText + "\nexchange/rk: " + exchange + "/" + routingKey);
+            System.out.println("----------------------------------------------");
+
+            // TODO： 可以尝试处理该消息，比如：重新发送、记录到日志等
+
+        });
+        /////////////////////////////// 设置 mandatory 属性 end //////////////////////////////////////
+
         return rabbitTemplate;
     }
 

@@ -200,8 +200,8 @@ public enum MessageDeliveryMode {
 1. 设置确认模式：发送端在创建channel时，设置channel为`confirm`模式（`confirm.select`）；
 2. MessageID: 所有通过该channel发送的Message，都会指派一个**唯一的ID**(`delivery-tag`)；
 3. 消息确认：一旦消息**被投递到匹配的Queue后**，`broker`会发送`basic.ack`来确认Message已被处理（包含delivery-tag）；
-4. 发送端在收到确认后，会触发回调函数，可以用来处理消息确认；
-5. 如何rabbitmq broker发生错误，也可以显式的发送`nack(fail)`来告诉应用程序消息未确认；
+4. 发送端在收到确认后，会触发回调函数（confirmCallback），可以用来处理消息确认；
+5. 如果rabbitmq broker发生错误，会显式的发送`nack(fail)`来告诉应用程序消息未确认；
 6. 异步：无法保证消息何时被确认；
 7. 批量消息确认: `multiple=true`；
 
@@ -211,9 +211,8 @@ Java示例：(发送端发送大量messages，使用确认模式)
 下面将介绍一些发送端确认的细节。
 
 ## 发送端确认：返回的内容
-发送端确认模式，要么使用`basic.ack (OK)`，要么使用`basic.nack (fail)`，且同一个Message有且最多只会发送1次。
-发送端确认模式只会返回Message的`delivery-tag`，并不会返回完整的消息内容，这个可以和`mandatory`作对比。
-
+- 发送端确认模式：broker对Message确认时，要么返回`basic.ack (OK)`，要么返回`basic.nack (broker发生异常)`，且同一个Message最多只会确认1次。
+- 发送端确认模式：broker只会返回Message的`CorrelationData`（该数据是publisher发送Message时传递的），并不会返回完整的Message，这个可以和`mandatory`作对比。
 
 ## 否定确认
 异常情况时，服务端无法处理消息，则`broker`发送`basic.nack`来进行`否定确认`；  

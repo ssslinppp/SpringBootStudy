@@ -50,6 +50,57 @@ LOG_ROUTING_KEY_DEBUG = "*.debug.#";
 
 ## 发送端
 ### 使用TopicExchange
+
+### 设置 mandatory=true： msg无法路由到Queue时，会返回给publisher
+当 Message发送到Exchange后，若没有任何Queue绑定该Exchange，则Message会返回给publisher;    
+通过设置 returnCallback，publisher可以接收broker返回的完整Message信息，以及返回码；
+```
+rabbitTemplate.setMandatory(true);
+rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
+    System.out.println("-------mandatory(true): exchange route msg to queue fail ------------");
+    System.out.println("Returned: " + message + "\nreplyCode: " + replyCode
+            + "\nreplyText: " + replyText + "\nexchange/rk: " + exchange + "/" + routingKey);
+    System.out.println("----------------------------------------------");
+});
+```
+在配置文件中添加配置：
+```
+spring.rabbitmq.publisher-returns=true
+```
+
+### publisher confirm
+消息发送时，需要设置：CorrelationData；    
+当broker应答后，confirmCallback会调用，该Callback会使用发送时传递的CorrelationData作为参数；
+
+在发送Message，设置CorrelationData参数
+```
+ // 该处理器会在Message发送之前调用，用于更新或替换 CorrelationData
+        rabbitTemplate.setCorrelationDataPostProcessor(new CorrelationDataPostProcessor() {
+            @Override
+            public CorrelationData postProcess(Message message, CorrelationData correlationData) {
+                // 只是简单的将发送的消息封装起来
+                return new CompleteMessageCorrelationData(correlationData != null ? correlationData.getId() : null, message);
+            }
+        });
+```
+
+broker确认应答，confirmCallback会被调用： CorrelationData作为参数
+```
+ rabbitTemplate.setConfirmCallback((correlation, ack, reason) -> {
+            if (ack) {
+                System.out.println("publisher confirm [ack] for correlation: " + correlation);
+            } else {
+                //Message确认失败
+                System.out.println("publisher confirm [Nack] ,reason: " + reason + ", for correlation: " + correlation);
+            }
+        });
+```
+
+在配置文件中添加配置：
+```
+spring.rabbitmq.publisher-confirms=true
+```
+
 ### 消息发送格式为Json
 需要配置MessageConverter
 ```
