@@ -205,12 +205,24 @@ public enum MessageDeliveryMode {
 6. 异步：无法保证消息何时被确认；
 7. 批量消息确认: `multiple=true`；
 
+[Introducing Publisher Confirms](http://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/)    
+
+
 Java示例：(发送端发送大量messages，使用确认模式)
 [程序-确认模式](https://raw.githubusercontent.com/rabbitmq/rabbitmq-perf-test/master/src/main/java/com/rabbitmq/examples/ConfirmDontLoseMessages.java)    
 
 下面将介绍一些发送端确认的细节。
 
-## 发送端确认：返回的内容
+## broker返回确认的时机
+### 非持久化消息确认时机
+当publisher将msg发送到Exchange后，broker就会执行`basic.ack (OK)`或`basic.nack (broker发生异常)`，而**不是等到route到queue**；   
+即： **即便msg没有route到任何的queue，只要msg到达了exchange，broker就会进行发布确认**；
+
+### 持久化消息确认时机
+消息必须写入磁盘，或者移交给所有相关Queue之后，broker才会发送确认；
+
+
+## 发送端确认：broker返回的内容
 - 发送端确认模式：broker对Message确认时，要么返回`basic.ack (OK)`，要么返回`basic.nack (broker发生异常)`，且同一个Message最多只会确认1次。
 - 发送端确认模式：broker只会返回Message的`CorrelationData`（该数据是publisher发送Message时传递的），并不会返回完整的Message，这个可以和`mandatory`作对比。
 
