@@ -79,6 +79,8 @@ public class RabbitConfig {
         ////////////////////  publisher confirm ,start //////////////////////////////////////
         //publisher Confirms callback ：当broker应答ack或nack时，会回调该方法
         rabbitTemplate.setConfirmCallback((correlation, ack, reason) -> {
+            // TODO 如果发送消息时，指定了msg唯一ID（delivery_tag）,则这里可以通过这个ID来区分msg
+
             if (ack) {
                 System.out.println("publisher confirm [ack] for correlation: " + correlation);
             } else {
@@ -91,6 +93,8 @@ public class RabbitConfig {
         rabbitTemplate.setCorrelationDataPostProcessor(new CorrelationDataPostProcessor() {
             @Override
             public CorrelationData postProcess(Message message, CorrelationData correlationData) {
+                //TODO 在这里可以为Message分配一个全局唯一的ID（delivery_tag），用于区分消息
+
                 // 只是简单的将发送的消息封装起来
                 return new CompleteMessageCorrelationData(correlationData != null ? correlationData.getId() : null, message);
             }

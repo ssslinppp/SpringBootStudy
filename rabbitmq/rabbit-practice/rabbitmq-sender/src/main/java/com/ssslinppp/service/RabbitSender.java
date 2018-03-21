@@ -3,7 +3,6 @@ package com.ssslinppp.service;
 import com.ssslinppp.rabbit.model.SendedMessage;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -55,15 +54,13 @@ public class RabbitSender {
         }
 
         //////  发送message: 有Queue接收
-        rabbitTemplate.convertAndSend(topicExchange.getName(), LOG_ROUTING_KEY_LIST.get(index), message,
-                new CorrelationData(message.getId() + ""));
+        rabbitTemplate.convertAndSend(topicExchange.getName(), LOG_ROUTING_KEY_LIST.get(index), message);
         System.out.println("send [" + message + "] to with routingKey: " + LOG_ROUTING_KEY_LIST.get(index));
 
         ////////// 发送Message，没有任何的Queue接收，会触发：returnCallback
         String msgWithoutQueueRouted = "Message(without any queue routed)";
         String routingKeyWithoutQueueRouted = "routingKey_no_queue_bind";
-        rabbitTemplate.convertAndSend(topicExchange.getName(), routingKeyWithoutQueueRouted, msgWithoutQueueRouted,
-                new CorrelationData(new Random().nextInt() + ""));
+        rabbitTemplate.convertAndSend(topicExchange.getName(), routingKeyWithoutQueueRouted, msgWithoutQueueRouted);
         System.out.println("send [" + msgWithoutQueueRouted + "] to with routingKey: " + routingKeyWithoutQueueRouted);
     }
 
