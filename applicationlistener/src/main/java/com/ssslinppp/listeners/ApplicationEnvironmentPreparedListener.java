@@ -15,11 +15,6 @@ import java.util.Iterator;
  * ApplicationEnvironmentPreparedEvent：环境事先准备，spring boot中的环境已经准备ok
  * 可以通过ApplicationEnvironmentPreparedEvent获取到SpringApplication、ConfigurableEnvironment等等信息，
  * 可以通过ConfigurableEnvironment实例对象来修改以及获取默认的环境信息。
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/9/28 <br/>
- * Time: 16:38 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
  * To change this template use File | Settings | File Templates.
  */
 public class ApplicationEnvironmentPreparedListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {

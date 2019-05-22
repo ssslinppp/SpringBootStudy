@@ -9,11 +9,6 @@ import org.springframework.context.annotation.Profile;
  * Description：WorkQueues: 单生产者-多消费者<br/>
  * https://www.rabbitmq.com/tutorials/tutorial-two-spring-amqp.html
  * <p>
- * User: liulin <br/>
- * Date: 2017/10/25 <br/>
- * Time: 17:35 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Profile({"tut2", "work-queues"})
 @Configuration

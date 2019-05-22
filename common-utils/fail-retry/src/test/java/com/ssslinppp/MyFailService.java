@@ -7,11 +7,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Desc:
- * <p>
- * User: liulin ,Date: 2017/12/20 , Time: 11:31 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Service
 public class MyFailService {

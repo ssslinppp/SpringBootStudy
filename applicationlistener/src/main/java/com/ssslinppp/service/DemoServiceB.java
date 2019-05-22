@@ -7,12 +7,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/9/28 <br/>
- * Time: 15:49 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Component
 public class DemoServiceB {

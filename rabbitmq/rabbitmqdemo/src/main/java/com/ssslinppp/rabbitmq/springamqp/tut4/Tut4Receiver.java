@@ -4,12 +4,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.util.StopWatch;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/26 <br/>
- * Time: 17:02 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("Duplicates")
 public class Tut4Receiver {

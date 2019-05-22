@@ -10,12 +10,6 @@ import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/11/7 <br/>
- * Time: 17:40 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @RestController
 @RequestMapping("/session")

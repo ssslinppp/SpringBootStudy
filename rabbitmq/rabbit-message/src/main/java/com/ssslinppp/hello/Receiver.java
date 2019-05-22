@@ -5,12 +5,6 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/24 <br/>
- * Time: 15:31 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Component
 public class Receiver {

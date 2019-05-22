@@ -10,9 +10,6 @@ import java.util.Random;
  * 1. 实现Serializable接口；
  * 2. 提供默认构造器：
  * <p>
- * User: liulin ,Date: 2018/3/8 , Time: 10:00 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Data
 public class SendedMessage {

@@ -7,9 +7,6 @@ import java.lang.annotation.*;
  * <p>
  * 某些方法执行时，若执行失败（如抛出异常），希望`失败重试`，并可以设置失败重试的次数，此模块就是完成此功能；
  * <p>
- * User: liulin ,Date: 2017/12/20 , Time: 10:07 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

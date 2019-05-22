@@ -9,12 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/27 <br/>
- * Time: 12:56 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Profile({"tut6", "rpc"})
 @Configuration

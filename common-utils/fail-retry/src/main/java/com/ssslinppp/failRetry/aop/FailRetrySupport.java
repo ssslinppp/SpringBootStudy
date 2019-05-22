@@ -9,9 +9,6 @@ import java.util.Arrays;
 /**
  * Desc: 注解 {@link FailRetry} 中方法扩展点的默认实现
  * <p>
- * User: liulin ,Date: 2017/12/20 , Time: 10:18 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public abstract class FailRetrySupport {
     private static final Logger logger = LoggerFactory.getLogger(FailRetrySupport.class);

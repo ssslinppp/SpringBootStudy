@@ -6,12 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/11/8 <br/>
- * Time: 15:22 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class User implements Serializable {
     private String name;

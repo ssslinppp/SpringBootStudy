@@ -5,12 +5,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.util.StopWatch;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/25 <br/>
- * Time: 17:40 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @RabbitListener(queues = "hello-workqueuqe")
 public class Tut2Receiver {

@@ -3,12 +3,6 @@ package com.ssslinppp.rabbitmq.springamqp.tut6;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/27 <br/>
- * Time: 12:59 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class Tut6Server {
     @RabbitListener(queues = "tut.rpc.requests")

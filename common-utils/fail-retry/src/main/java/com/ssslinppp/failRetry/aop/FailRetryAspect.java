@@ -18,10 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Desc:
- * <p>
- * User: liulin ,Date: 2017/12/20 , Time: 10:24 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Component
 @Aspect

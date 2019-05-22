@@ -6,12 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/26 <br/>
- * Time: 14:51 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class Tut3Sender {
     int dots = 0;

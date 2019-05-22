@@ -5,12 +5,6 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/25 <br/>
- * Time: 15:46 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class Receive {
     private final static String QUEUE_NAME = "hello-demo1";

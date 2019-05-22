@@ -7,12 +7,6 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/9/28 <br/>
- * Time: 17:20 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class SpringFactoriesLoaderTest {
     public static void main(String[] args) throws IOException {

@@ -4,12 +4,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.util.StopWatch;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/26 <br/>
- * Time: 14:57 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class Tut3Receiver {
     @RabbitListener(queues = "#{autoDeleteQueue1.name}")

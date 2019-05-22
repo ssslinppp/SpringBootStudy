@@ -12,12 +12,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 /**
  * ApplicationReadyEvent：上下文已经准备ok。
  * 这个时候就可以通过ApplicationReadyEvent获取ConfigurableApplicationContext，然后通过ConfigurableApplicationContext 获取bean的信息。
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/9/28 <br/>
- * Time: 16:03 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class ApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationReadyListener.class);

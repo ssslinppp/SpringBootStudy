@@ -11,11 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Desc:
- * <p>
- * User: liulin ,Date: 2018/3/7 , Time: 16:53 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Configuration
 public class RabbitConfig {

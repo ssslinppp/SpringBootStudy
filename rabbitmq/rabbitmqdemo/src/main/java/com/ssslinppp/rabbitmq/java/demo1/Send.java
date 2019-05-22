@@ -7,12 +7,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/25 <br/>
- * Time: 14:54 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class Send {
     private final static String QUEUE_NAME = "hello-demo1";

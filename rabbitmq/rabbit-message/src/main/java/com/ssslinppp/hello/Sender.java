@@ -9,12 +9,6 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/10/24 <br/>
- * Time: 16:59 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Component
 public class Sender implements CommandLineRunner {

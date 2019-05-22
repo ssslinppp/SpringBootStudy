@@ -15,12 +15,6 @@ import org.springframework.context.ApplicationListener;
  * .AnnotationConfigEmbeddedWebApplicationContext@69b0fd6f has not been refreshed yet
  * </pre>
  * 获取到上下文之后，可以将其注入到其他类中，毕竟ConfigurableApplicationContext为引用类型
- * Description：<br/>
- * User: liulin <br/>
- * Date: 2017/9/28 <br/>
- * Time: 15:39 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 public class ApplicationPreparedListener implements ApplicationListener<ApplicationPreparedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationPreparedListener.class);

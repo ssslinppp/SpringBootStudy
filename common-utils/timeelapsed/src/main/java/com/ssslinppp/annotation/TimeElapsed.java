@@ -3,11 +3,6 @@ package com.ssslinppp.annotation;
 import java.lang.annotation.*;
 
 /**
- * Desc:
- * <p>
- * User: liulin ,Date: 2017/12/19 , Time: 16:46 <br/>
- * Email: liulin@cmss.chinamobile.com <br/>
- * To change this template use File | Settings | File Templates.
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
